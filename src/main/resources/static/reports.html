@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Reports</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #2f5bea;
+            color: white;
+            padding: 22px 45px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .report-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #eef1f7;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .percentage {
+            font-weight: bold;
+        }
+
+        .good {
+            color: #187333;
+        }
+
+        .warning {
+            color: #c62828;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 11px 20px;
+            background: #2f5bea;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .back-button:hover {
+            background: #2449c7;
+        }
+
+        .below-75 {
+            background: #ffe5e5;
+        }
+        .report-filter {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.report-filter label {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+#monthSelector {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+#generateButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 7px;
+    background: #2f5bea;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+#generateButton:hover {
+    background: #2449c7;
+}
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>📊 Attendance Reports</h1>
+</header>
+
+<div class="container">
+
+    <a href="/" class="back-button">← Back to Dashboard</a>
+
+    <div class="report-container">
+
+        <h2>Student Attendance Report</h2>
+        <div class="report-filter">
+
+    <label for="monthSelector">
+        📅 Select Month:
+    </label>
+
+    <input type="month" id="monthSelector">
+
+    <button id="generateButton">
+        📊 Generate Report
+    </button>
+
+</div>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Semester</th>
+                    <th>Section</th>
+                    <th>Total Classes</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+
+            <tbody id="reportTable">
+
+                <tr>
+                    <td colspan="9" class="loading">
+                        Loading reports...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const monthSelector = document.getElementById("monthSelector");
+const generateButton = document.getElementById("generateButton");
+
+
+// Set current month automatically
+const today = new Date();
+
+const currentMonth =
+    today.getFullYear() +
+    "-" +
+    String(today.getMonth() + 1).padStart(2, "0");
+
+monthSelector.value = currentMonth;
+
+
+// Load reports
+async function loadReports() {
+
+    const selectedMonth = monthSelector.value;
+
+    if (!selectedMonth) {
+        alert("Please select a month.");
+        return;
+    }
+
+    const table = document.getElementById("reportTable");
+
+    table.innerHTML = `
+        <tr>
+            <td colspan="9" class="loading">
+                Loading reports...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const response = await fetch(
+            `/api/reports?month=${selectedMonth}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load reports");
+        }
+
+        const reports = await response.json();
+
+        displayReports(reports);
+
+    } catch (error) {
+
+        console.error(error);
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" class="loading">
+                    ❌ Could not load attendance reports.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+// Display reports
+function displayReports(reports) {
+
+    const table = document.getElementById("reportTable");
+
+    table.innerHTML = "";
+
+    if (reports.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" class="loading">
+                    No students found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    reports.forEach(report => {
+
+        const row = document.createElement("tr");
+
+        // Highlight students below 75%
+        if (report.percentage < 75 && report.totalClasses > 0) {
+            row.classList.add("below-75");
+        }
+
+
+        const percentageClass =
+            report.percentage >= 75
+                ? "good"
+                : "warning";
+
+
+        row.innerHTML = `
+
+            <td>${report.id}</td>
+
+            <td>${report.rollNumber}</td>
+
+            <td>${report.name}</td>
+
+            <td>${report.semester}</td>
+
+            <td>${report.section}</td>
+
+            <td>${report.totalClasses}</td>
+
+            <td>${report.present}</td>
+
+            <td>${report.absent}</td>
+
+            <td class="percentage ${percentageClass}">
+                ${report.percentage}%
+            </td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+}
+
+
+// Generate report button
+generateButton.addEventListener("click", loadReports);
+
+
+// Load current month's report when page opens
+loadReports();
+</script>
+
+</body>
+
+</html>

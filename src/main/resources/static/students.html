@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Students</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        header {
+            background: #2f5bea;
+            color: white;
+            padding: 20px 40px;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        .container {
+            padding: 35px 45px;
+        }
+
+        .form-card,
+        .students-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 7px;
+            background: #2f5bea;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f0f2f5;
+        }
+
+        .delete-btn {
+            background: #d9534f;
+            margin: 0;
+            padding: 7px 12px;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 Student Management</h1>
+</header>
+
+<div class="container">
+
+    <div class="form-card">
+
+        <h2>➕ Add Student</h2>
+
+        <form id="studentForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input type="text" id="rollNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Semester</label>
+                    <input type="number" id="semester" min="1" max="8" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Section</label>
+                    <input type="text" id="section" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Parent Name</label>
+                    <input type="text" id="parentName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Parent Phone</label>
+                    <input type="tel" id="parentPhone" required>
+                </div>
+
+            </div>
+
+            <button type="submit">Save Student</button>
+
+        </form>
+
+        <p id="message"></p>
+
+    </div>
+
+
+    <div class="students-card">
+
+        <h2>👨‍🎓 Students</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Roll Number</th>
+                    <th>Semester</th>
+                    <th>Section</th>
+                    <th>Parent</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="studentTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let attendanceRecords = {};
+
+function markAttendance(studentId, status) {
+
+    attendanceRecords[studentId] = status;
+
+    // Find the row belonging to this student
+    const row = document.querySelector(
+        `tr[data-student-id="${studentId}"]`
+    );
+
+    if (!row) return;
+
+    const buttons = row.querySelectorAll(".attendance-btn");
+
+    buttons.forEach(button => {
+        button.classList.remove("selected");
+    });
+
+    if (status === "PRESENT") {
+        buttons[0].classList.add("selected");
+    } else {
+        buttons[1].classList.add("selected");
+    }
+}
+
+
+async function saveAttendance() {
+
+    const date = document.getElementById("attendanceDate").value;
+
+    if (!date) {
+        alert("Please select a date.");
+        return;
+    }
+
+    const studentIds = Object.keys(attendanceRecords);
+
+    if (studentIds.length === 0) {
+        alert("Please mark attendance for at least one student.");
+        return;
+    }
+
+    try {
+
+        for (const studentId of studentIds) {
+
+            const status = attendanceRecords[studentId];
+
+            const response = await fetch(
+                `/api/attendance/mark?studentId=${studentId}&date=${date}&status=${status}`,
+                {
+                    method: "POST"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to save attendance");
+            }
+        }
+
+        alert("Attendance saved successfully! ✅");
+
+        attendanceRecords = {};
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error saving attendance ❌");
+    }
+}
+
+</script>
+
+</body>
+</html>
