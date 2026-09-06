@@ -1,88 +1,91 @@
-# 📊 Attendance Management System
+# Attendance Management System
 
-A web-based Attendance Management System developed using **Java, Spring Boot, MySQL, HTML, CSS, and JavaScript**. The system provides a simple interface for managing students, recording attendance, and generating attendance reports.
+A web-based attendance management system developed using Java, Spring Boot, MySQL, HTML, CSS, and JavaScript. The application provides a centralized way to manage student information, record attendance, and view attendance reports.
 
----
+## Overview
 
-## 📌 Overview
+Managing attendance manually can become time-consuming, especially when dealing with multiple students and maintaining records over time. This project was developed to provide a simple digital solution for maintaining attendance records.
 
-The Attendance Management System is designed to simplify the process of maintaining student attendance digitally.
+The application provides separate sections for student management, attendance recording, and attendance reports. The backend is built with Spring Boot and uses Spring Data JPA to communicate with a MySQL database.
 
-Instead of managing attendance manually, the application allows users to:
+## Features
 
-- 👨‍🎓 Manage student records
-- 📝 Record student attendance
-- 📅 View attendance information
-- 📊 Generate attendance reports
-- 🏠 Navigate through a centralized dashboard
+### Student Management
 
-The backend is developed using **Spring Boot**, while **MySQL** is used for persistent data storage.
+- Add and manage student information
+- Store student records in the database
+- View existing student information
 
----
+### Attendance Management
 
-## ✨ Features
+- Record attendance for students
+- Store attendance records in MySQL
+- Retrieve attendance information when required
 
-### 👨‍🎓 Student Management
-- Add student records
-- View student information
-- Manage student data
+### Attendance Reports
 
-### 📝 Attendance Management
-- Record attendance
-- Associate attendance records with students
-- View attendance information
+- View recorded attendance
+- Generate and display attendance information
+- Retrieve attendance data from the database
 
-### 📊 Attendance Reports
-- View attendance reports
-- Retrieve attendance information from the database
-- Display attendance data through a web interface
+### Dashboard
 
-### 🖥️ Web Interface
-- Dashboard
-- Student management page
-- Attendance page
-- Reports page
+- Provides a central navigation point for the application
+- Provides access to student, attendance, and report sections
 
----
-
-## 🛠️ Technologies Used
+## Technologies Used
 
 | Technology | Purpose |
-|---|---|
-| **Java** | Backend development |
-| **Spring Boot** | Backend framework and REST controllers |
-| **MySQL** | Database |
-| **HTML** | Web page structure |
-| **CSS** | Styling |
-| **JavaScript** | Client-side functionality |
-| **Maven** | Dependency management and build tool |
+|------------|---------|
+| Java | Backend development |
+| Spring Boot | Application framework |
+| Spring Data JPA | Database interaction |
+| MySQL | Data storage |
+| HTML | Frontend structure |
+| CSS | Frontend styling |
+| JavaScript | Client-side functionality |
+| Maven | Dependency management and build |
 
----
-
-## 🏗️ Project Architecture
-
-The project follows a layered Spring Boot architecture:
+## Project Structure
 
 ```text
-Attendance Management System
+attendance-management/
 │
-├── Controller Layer
-│   ├── AttendanceController
-│   ├── DashboardController
-│   ├── HomeController
-│   ├── ReportController
-│   └── StudentController
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/attendance/management/
+│   │   │       ├── controller/
+│   │   │       │   ├── AttendanceController.java
+│   │   │       │   ├── DashboardController.java
+│   │   │       │   ├── HomeController.java
+│   │   │       │   ├── ReportController.java
+│   │   │       │   └── StudentController.java
+│   │   │       │
+│   │   │       ├── entity/
+│   │   │       │   ├── Attendance.java
+│   │   │       │   └── Student.java
+│   │   │       │
+│   │   │       ├── repository/
+│   │   │       │   ├── AttendanceRepository.java
+│   │   │       │   └── StudentRepository.java
+│   │   │       │
+│   │   │       └── AttendanceManagementApplication.java
+│   │   │
+│   │   └── resources/
+│   │       ├── static/
+│   │       │   ├── index.html
+│   │       │   ├── attendance.html
+│   │       │   ├── students.html
+│   │       │   └── reports.html
+│   │       │
+│   │       └── application.properties
+│   │
+│   └── test/
 │
-├── Entity Layer
-│   ├── Attendance
-│   └── Student
-│
-├── Repository Layer
-│   ├── AttendanceRepository
-│   └── StudentRepository
-│
-└── Frontend
-    ├── index.html
-    ├── attendance.html
-    ├── students.html
-    └── reports.html
+├── .gitignore
+├── .gitattributes
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── README.md
