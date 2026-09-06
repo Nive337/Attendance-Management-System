@@ -25,30 +25,33 @@ public class AttendanceController {
         this.studentRepository = studentRepository;
     }
 
+    // Get all attendance records
     @GetMapping
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
 
-    @PostMapping("/attendance")
-public Attendance markAttendance(
-        @RequestParam Long studentId,
-        @RequestParam LocalDate date,
-        @RequestParam String status) {
+    // Mark or update attendance
+    @PostMapping
+    public Attendance markAttendance(
+            @RequestParam Long studentId,
+            @RequestParam LocalDate date,
+            @RequestParam String status) {
 
-    Student student = studentRepository
-            .findById(studentId)
-            .orElseThrow(() ->
-                    new RuntimeException("Student not found"));
+        Student student = studentRepository
+                .findById(studentId)
+                .orElseThrow(() ->
+                        new RuntimeException("Student not found"));
 
-    Attendance attendance = attendanceRepository
-            .findByStudentIdAndAttendanceDate(studentId, date)
-            .orElse(new Attendance());
+        Attendance attendance =
+                attendanceRepository
+                        .findByStudent_IdAndAttendanceDate(studentId, date)
+                        .orElse(new Attendance());
 
-    attendance.setStudent(student);
-    attendance.setAttendanceDate(date);
-    attendance.setStatus(status);
+        attendance.setStudent(student);
+        attendance.setAttendanceDate(date);
+        attendance.setStatus(status);
 
-    return attendanceRepository.save(attendance);
-}
+        return attendanceRepository.save(attendance);
+    }
 }

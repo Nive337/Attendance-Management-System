@@ -2,6 +2,7 @@ package com.attendance.management.controller;
 
 import com.attendance.management.entity.Student;
 import com.attendance.management.repository.StudentRepository;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,21 +17,27 @@ public class StudentController {
         this.studentRepository = studentRepository;
     }
 
+
     // Get all students
     @GetMapping
     public List<Student> getAllStudents() {
+
         return studentRepository.findAll();
     }
+
 
     // Add a new student
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
+
         return studentRepository.save(student);
     }
+
 
     // Delete a student
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable Long id) {
+
         studentRepository.deleteById(id);
     }
 }

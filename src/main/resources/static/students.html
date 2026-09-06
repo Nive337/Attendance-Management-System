@@ -8,6 +8,7 @@
     <title>Manage Students</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -63,7 +64,8 @@
             font-weight: bold;
         }
 
-        input {
+        input,
+        select {
             padding: 11px;
             border: 1px solid #ccc;
             border-radius: 7px;
@@ -85,9 +87,54 @@
             opacity: 0.9;
         }
 
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 11px 20px;
+            background: #2f5bea;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .back-button:hover {
+            background: #2449c7;
+        }
+
+        /* GROUP */
+
+        .student-group {
+            margin-bottom: 35px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            background: #eef1f7;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .group-header span {
+            color: #2f5bea;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 950px;
         }
 
         th,
@@ -98,7 +145,7 @@
         }
 
         th {
-            background: #f0f2f5;
+            background: #f8f9fb;
         }
 
         .delete-btn {
@@ -107,12 +154,29 @@
             padding: 7px 12px;
         }
 
+        .delete-btn:hover {
+            background: #c9302c;
+        }
+
         #message {
             margin-top: 15px;
             font-weight: bold;
         }
 
+        .loading {
+            text-align: center;
+            padding: 25px;
+            font-size: 17px;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #777;
+        }
+
         @media (max-width: 700px) {
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -121,8 +185,10 @@
                 padding: 20px;
             }
         }
+
     </style>
 </head>
+
 
 <body>
 
@@ -130,7 +196,15 @@
     <h1>🎓 Student Management</h1>
 </header>
 
+
 <div class="container">
+
+    <a href="/" class="back-button">
+        ← Back to Dashboard
+    </a>
+
+
+    <!-- ADD STUDENT -->
 
     <div class="form-card">
 
@@ -141,70 +215,143 @@
             <div class="form-grid">
 
                 <div class="form-group">
-                    <label>Student Name</label>
-                    <input type="text" id="name" required>
+
+                    <label for="name">
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        required
+                    >
+
                 </div>
 
-                <div class="form-group">
-                    <label>Roll Number</label>
-                    <input type="text" id="rollNumber" required>
-                </div>
 
                 <div class="form-group">
-                    <label>Semester</label>
-                    <input type="number" id="semester" min="1" max="8" required>
+
+                    <label for="rollNumber">
+                        Roll Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="rollNumber"
+                        required
+                    >
+
                 </div>
 
-                <div class="form-group">
-                    <label>Section</label>
-                    <input type="text" id="section" required>
-                </div>
 
                 <div class="form-group">
-                    <label>Parent Name</label>
-                    <input type="text" id="parentName" required>
+
+                    <label for="joiningYear">
+                        Joining Year
+                    </label>
+
+                    <input
+                        type="number"
+                        id="joiningYear"
+                        min="2000"
+                        max="2100"
+                        placeholder="Example: 2024"
+                        required
+                    >
+
                 </div>
 
+
                 <div class="form-group">
-                    <label>Parent Phone</label>
-                    <input type="tel" id="parentPhone" required>
+
+                    <label for="semester">
+                        Semester
+                    </label>
+
+                    <input
+                        type="number"
+                        id="semester"
+                        min="1"
+                        max="8"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="section">
+                        Section
+                    </label>
+
+                    <input
+                        type="text"
+                        id="section"
+                        placeholder="Example: A"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="parentName">
+                        Parent Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="parentName"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="parentPhone">
+                        Parent Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="parentPhone"
+                        required
+                    >
+
                 </div>
 
             </div>
 
-            <button type="submit">Save Student</button>
+
+            <button type="submit">
+                Save Student
+            </button>
 
         </form>
+
 
         <p id="message"></p>
 
     </div>
 
 
+    <!-- STUDENTS -->
+
     <div class="students-card">
 
         <h2>👨‍🎓 Students</h2>
 
-        <table>
+        <div id="studentGroups">
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Roll Number</th>
-                    <th>Semester</th>
-                    <th>Section</th>
-                    <th>Parent</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+            <div class="loading">
+                Loading students...
+            </div>
 
-            <tbody id="studentTableBody">
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
@@ -213,79 +360,469 @@
 
 <script>
 
-let attendanceRecords = {};
+    // ==========================================
+    // LOAD STUDENTS
+    // ==========================================
 
-function markAttendance(studentId, status) {
+    async function loadStudents() {
 
-    attendanceRecords[studentId] = status;
+        const container =
+            document.getElementById("studentGroups");
 
-    // Find the row belonging to this student
-    const row = document.querySelector(
-        `tr[data-student-id="${studentId}"]`
-    );
+        container.innerHTML = `
+            <div class="loading">
+                Loading students...
+            </div>
+        `;
 
-    if (!row) return;
+        try {
 
-    const buttons = row.querySelectorAll(".attendance-btn");
-
-    buttons.forEach(button => {
-        button.classList.remove("selected");
-    });
-
-    if (status === "PRESENT") {
-        buttons[0].classList.add("selected");
-    } else {
-        buttons[1].classList.add("selected");
-    }
-}
-
-
-async function saveAttendance() {
-
-    const date = document.getElementById("attendanceDate").value;
-
-    if (!date) {
-        alert("Please select a date.");
-        return;
-    }
-
-    const studentIds = Object.keys(attendanceRecords);
-
-    if (studentIds.length === 0) {
-        alert("Please mark attendance for at least one student.");
-        return;
-    }
-
-    try {
-
-        for (const studentId of studentIds) {
-
-            const status = attendanceRecords[studentId];
-
-            const response = await fetch(
-                `/api/attendance/mark?studentId=${studentId}&date=${date}&status=${status}`,
-                {
-                    method: "POST"
-                }
-            );
+            const response =
+                await fetch("/api/students");
 
             if (!response.ok) {
-                throw new Error("Failed to save attendance");
+                throw new Error("Failed to load students");
             }
+
+            const students =
+                await response.json();
+
+            displayStudents(students);
+
+        } catch (error) {
+
+            console.error(error);
+
+            container.innerHTML = `
+                <div class="loading">
+                    ❌ Could not load students.
+                </div>
+            `;
+        }
+    }
+
+
+    // ==========================================
+    // DISPLAY STUDENTS GROUPED BY YEAR + SECTION
+    // ==========================================
+
+    function displayStudents(students) {
+
+        const container =
+            document.getElementById("studentGroups");
+
+        container.innerHTML = "";
+
+
+        if (students.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    No students found.
+                </div>
+            `;
+
+            return;
         }
 
-        alert("Attendance saved successfully! ✅");
 
-        attendanceRecords = {};
+        // ======================================
+        // GROUP STUDENTS
+        // ======================================
 
-    } catch (error) {
+        const groups = {};
 
-        console.error(error);
-        alert("Error saving attendance ❌");
+
+        students.forEach(student => {
+
+            const year =
+                student.joiningYear || "Unknown Year";
+
+            const section =
+                student.section || "Unknown Section";
+
+
+            const groupKey =
+                `${year}-${section}`;
+
+
+            if (!groups[groupKey]) {
+
+                groups[groupKey] = {
+                    year: year,
+                    section: section,
+                    students: []
+                };
+
+            }
+
+
+            groups[groupKey].students.push(student);
+
+        });
+
+
+        // ======================================
+        // SORT GROUPS
+        // ======================================
+
+        const sortedGroups =
+            Object.values(groups).sort((a, b) => {
+
+                if (a.year !== b.year) {
+
+                    return Number(a.year) - Number(b.year);
+
+                }
+
+                return a.section
+                    .toString()
+                    .localeCompare(
+                        b.section.toString()
+                    );
+
+            });
+
+
+        // ======================================
+        // CREATE GROUPS
+        // ======================================
+
+        sortedGroups.forEach(group => {
+
+            const groupDiv =
+                document.createElement("div");
+
+            groupDiv.className =
+                "student-group";
+
+
+            groupDiv.innerHTML = `
+
+                <div class="group-header">
+
+                    📚 Joining Year:
+                    <span>${group.year}</span>
+
+                    &nbsp; | &nbsp;
+
+                    Section:
+                    <span>${group.section}</span>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+
+                                <th>Name</th>
+
+                                <th>Roll Number</th>
+
+                                <th>Joining Year</th>
+
+                                <th>Semester</th>
+
+                                <th>Section</th>
+
+                                <th>Parent</th>
+
+                                <th>Phone</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            `;
+
+
+            const tbody =
+                groupDiv.querySelector("tbody");
+
+
+            // ==================================
+            // ADD STUDENTS TO GROUP
+            // ==================================
+
+            group.students.forEach(student => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${student.id}
+                    </td>
+
+                    <td>
+                        ${student.name}
+                    </td>
+
+                    <td>
+                        ${student.rollNumber}
+                    </td>
+
+                    <td>
+                        ${student.joiningYear || "-"}
+                    </td>
+
+                    <td>
+                        ${student.semester}
+                    </td>
+
+                    <td>
+                        ${student.section}
+                    </td>
+
+                    <td>
+                        ${student.parentName}
+                    </td>
+
+                    <td>
+                        ${student.parentPhone}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteStudent(${student.id})">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            });
+
+
+            container.appendChild(groupDiv);
+
+        });
+
     }
-}
+
+
+    // ==========================================
+    // ADD STUDENT
+    // ==========================================
+
+    document
+        .getElementById("studentForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const student = {
+
+                    name:
+                        document
+                        .getElementById("name")
+                        .value
+                        .trim(),
+
+
+                    rollNumber:
+                        document
+                        .getElementById("rollNumber")
+                        .value
+                        .trim(),
+
+
+                    joiningYear:
+                        parseInt(
+                            document
+                            .getElementById("joiningYear")
+                            .value
+                        ),
+
+
+                    semester:
+                        parseInt(
+                            document
+                            .getElementById("semester")
+                            .value
+                        ),
+
+
+                    section:
+                        document
+                        .getElementById("section")
+                        .value
+                        .trim()
+                        .toUpperCase(),
+
+
+                    parentName:
+                        document
+                        .getElementById("parentName")
+                        .value
+                        .trim(),
+
+
+                    parentPhone:
+                        document
+                        .getElementById("parentPhone")
+                        .value
+                        .trim()
+
+                };
+
+
+                const message =
+                    document.getElementById("message");
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/students",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(student)
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Failed to save student"
+                        );
+
+                    }
+
+
+                    message.innerHTML =
+                        "✅ Student added successfully!";
+
+
+                    document
+                        .getElementById("studentForm")
+                        .reset();
+
+
+                    loadStudents();
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    message.innerHTML =
+                        "❌ Could not save student.";
+
+                }
+
+            }
+        );
+
+
+    // ==========================================
+    // DELETE STUDENT
+    // ==========================================
+
+    async function deleteStudent(id) {
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this student?"
+            );
+
+
+        if (!confirmDelete) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/students/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to delete student"
+                );
+
+            }
+
+
+            alert(
+                "Student deleted successfully! ✅"
+            );
+
+
+            loadStudents();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Could not delete student ❌"
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    loadStudents();
 
 </script>
 
 </body>
+
 </html>

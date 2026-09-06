@@ -43,7 +43,7 @@ public class ReportController {
 
             // Get all attendance records for this student
             List<Attendance> attendanceList =
-                    attendanceRepository.findByStudentId(student.getId());
+                    attendanceRepository.findByStudent_Id(student.getId());
 
             // Keep only records for selected year and month
             attendanceList = attendanceList.stream()

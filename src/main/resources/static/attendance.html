@@ -358,11 +358,12 @@
             for (const record of records) {
 
                 const response = await fetch(
-                    `/api/attendance/mark?studentId=${record.studentId}&date=${date}&status=${record.status}`,
-                    {
-                        method: "POST"
-                    }
-                );
+    `/api/attendance?studentId=${record.studentId}&date=${date}&status=${record.status}`,
+    {
+        method: "POST"
+    }
+);
+
 
                 if (!response.ok) {
                     throw new Error(

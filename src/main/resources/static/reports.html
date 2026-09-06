@@ -222,6 +222,9 @@ async function loadReports() {
         return;
     }
 
+    // Split YYYY-MM into year and month
+    const [year, month] = selectedMonth.split("-");
+
     const table = document.getElementById("reportTable");
 
     table.innerHTML = `
@@ -235,7 +238,7 @@ async function loadReports() {
     try {
 
         const response = await fetch(
-            `/api/reports?month=${selectedMonth}`
+            `/api/reports?year=${year}&month=${parseInt(month)}`
         );
 
         if (!response.ok) {
@@ -259,7 +262,6 @@ async function loadReports() {
         `;
     }
 }
-
 
 // Display reports
 function displayReports(reports) {
