@@ -1,0 +1,80 @@
+.edit-student-error {
+  background: #fdecee;
+  color: #dc3545;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.edit-student-form label {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c2333;
+}
+
+.edit-student-form label span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.edit-student-form input {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #e7e9ee;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: normal;
+  box-sizing: border-box;
+}
+
+.edit-student-field-error {
+  display: block;
+  color: #dc3545;
+  font-size: 11.5px;
+  margin-top: 4px;
+  font-weight: normal;
+}
+
+.edit-student-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.edit-student-cancel,
+.edit-student-save {
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.edit-student-cancel {
+  background: #fff;
+  border-color: #e7e9ee;
+  color: #1c2333;
+}
+
+.edit-student-cancel:hover:not(:disabled) {
+  background: #f4f6f9;
+}
+
+.edit-student-save {
+  background: #10a37f;
+  color: #fff;
+}
+
+.edit-student-save:hover:not(:disabled) {
+  background: #0c8267;
+}
+
+.edit-student-cancel:disabled,
+.edit-student-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -15,8 +15,8 @@ import com.attendance.management.repository.AttendanceSessionRepository;
 import com.attendance.management.repository.CourseOfferingRepository;
 import com.attendance.management.repository.StudentEnrollmentRepository;
 import com.attendance.management.security.LecturerPrincipal;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
+
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,22 +35,25 @@ public class AttendanceService {
     private final StudentEnrollmentRepository studentEnrollmentRepository;
     private final AttendanceSessionRepository attendanceSessionRepository;
     private final AttendanceRecordRepository attendanceRecordRepository;
+    private final CourseOfferingAccessGuard accessGuard;
 
     public AttendanceService(CourseOfferingRepository courseOfferingRepository,
-                              StudentEnrollmentRepository studentEnrollmentRepository,
-                              AttendanceSessionRepository attendanceSessionRepository,
-                              AttendanceRecordRepository attendanceRecordRepository) {
+                          StudentEnrollmentRepository studentEnrollmentRepository,
+                          AttendanceSessionRepository attendanceSessionRepository,
+                          AttendanceRecordRepository attendanceRecordRepository,
+                          CourseOfferingAccessGuard accessGuard) {
         this.courseOfferingRepository = courseOfferingRepository;
         this.studentEnrollmentRepository = studentEnrollmentRepository;
         this.attendanceSessionRepository = attendanceSessionRepository;
         this.attendanceRecordRepository = attendanceRecordRepository;
+        this.accessGuard = accessGuard;
     }
 
     @Transactional(readOnly = true)
     public AttendanceRosterResponse getRoster(Long courseOfferingId, LocalDate date, Integer sessionNumber) {
         CourseOffering offering = courseOfferingRepository.findById(courseOfferingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course offering not found: " + courseOfferingId));
-        requireOwnership(offering);
+        
 
         List<StudentEnrollment> enrollments = studentEnrollmentRepository
                 .findByAcademicYearIdAndDegreeIdAndSemesterAndSectionAndStatusOrderByRollNumberAsc(
@@ -89,7 +92,7 @@ public class AttendanceService {
         CourseOffering offering = courseOfferingRepository.findById(request.getCourseOfferingId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Course offering not found: " + request.getCourseOfferingId()));
-        requireOwnership(offering);
+        
 
         List<StudentEnrollment> activeRoster = studentEnrollmentRepository
                 .findByAcademicYearIdAndDegreeIdAndSemesterAndSectionAndStatusOrderByRollNumberAsc(
@@ -116,13 +119,21 @@ public class AttendanceService {
                 .findByCourseOfferingIdAndAttendanceDateAndSessionNumber(
                         offering.getId(), request.getAttendanceDate(), request.getSessionNumber())
                 .orElseGet(() -> {
+                    LecturerPrincipal principal =
+                        (LecturerPrincipal) SecurityContextHolder.getContext()
+                            .getAuthentication()
+                            .getPrincipal();
+
+                    Lecturer lecturer = principal.getLecturer();
+
                     AttendanceSession newSession = new AttendanceSession();
                     newSession.setCourseOffering(offering);
                     newSession.setAttendanceDate(request.getAttendanceDate());
                     newSession.setSessionNumber(request.getSessionNumber());
-                    newSession.setCreatedByLecturer(currentLecturer());
+                    newSession.setCreatedByLecturer(lecturer);
+
                     return attendanceSessionRepository.save(newSession);
-                });
+               });
 
         Map<Long, AttendanceRecord> existingByEnrollmentId = new HashMap<>();
         attendanceRecordRepository.findByAttendanceSessionId(session.getId())
@@ -170,18 +181,4 @@ public class AttendanceService {
                 total, present, absent, late, percentage, summaries);
     }
 
-    private void requireOwnership(CourseOffering offering) {
-        Lecturer current = currentLecturer();
-        boolean isOwner = current.getId().equals(offering.getLecturer().getId());
-        boolean isAdmin = current.getRole() == Lecturer.Role.ADMIN;
-        if (!isOwner && !isAdmin) {
-            throw new AccessDeniedException("You are not assigned to this course offering.");
-        }
-    }
-
-    private Lecturer currentLecturer() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LecturerPrincipal principal = (LecturerPrincipal) authentication.getPrincipal();
-        return principal.getLecturer();
-    }
 }

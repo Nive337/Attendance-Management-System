@@ -1,0 +1,49 @@
+.dashboard-page {
+  color: #1c2333;
+}
+
+.dashboard-welcome {
+  margin: 0 0 20px;
+  color: #5b6478;
+  font-size: 14px;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  background: #fff;
+  border: 1px solid #e7e9ee;
+  border-radius: 12px;
+  padding: 18px 22px;
+  min-width: 160px;
+}
+
+.dashboard-card span {
+  display: block;
+  font-size: 12px;
+  color: #9399a8;
+  margin-bottom: 8px;
+}
+
+.dashboard-card strong {
+  font-size: 26px;
+}
+
+.dashboard-error {
+  color: #dc3545;
+}
+
+.dashboard-note {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #e3f6f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #0c8267;
+  max-width: 640px;
+}

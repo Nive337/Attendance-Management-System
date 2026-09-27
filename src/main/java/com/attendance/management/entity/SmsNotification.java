@@ -16,6 +16,10 @@ public class SmsNotification {
     @JoinColumn(name = "student_enrollment_id", nullable = false)
     private StudentEnrollment studentEnrollment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_offering_id", nullable = false)
+    private CourseOffering courseOffering;
+
     @Column(name = "notif_year", nullable = false)
     private Integer notifYear;
 
@@ -123,5 +127,13 @@ public class SmsNotification {
 
     public enum Status {
         PENDING, SENT, FAILED
+    }
+
+    public CourseOffering getCourseOffering() {
+        return courseOffering;
+    }
+
+    public void setCourseOffering(CourseOffering courseOffering) {
+        this.courseOffering = courseOffering;
     }
 }

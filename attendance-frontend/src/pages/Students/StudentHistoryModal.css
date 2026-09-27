@@ -1,0 +1,38 @@
+.history-parent {
+  margin: -8px 0 16px;
+  color: #5b6478;
+  font-size: 13px;
+}
+
+.history-error {
+  color: #dc3545;
+}
+
+.history-empty {
+  color: #9399a8;
+  font-size: 13.5px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  font-size: 11px;
+  color: #9399a8;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e7e9ee;
+}
+
+.history-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #f0f1f5;
+  font-size: 13px;
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}

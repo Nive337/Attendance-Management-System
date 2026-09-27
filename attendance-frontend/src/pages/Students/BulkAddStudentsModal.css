@@ -1,0 +1,156 @@
+.bulk-form-error {
+  background: #fdecee;
+  color: #dc3545;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.bulk-form-header {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.bulk-form-header label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1c2333;
+}
+
+.bulk-form-header label span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.bulk-form-header input,
+.bulk-form-header select {
+  width: 100%;
+  padding: 8px 9px;
+  border: 1px solid #e7e9ee;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: normal;
+  box-sizing: border-box;
+}
+
+.bulk-table-wrap {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid #e7e9ee;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.bulk-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bulk-table th {
+  position: sticky;
+  top: 0;
+  background: #f4f6f9;
+  text-align: left;
+  font-size: 11px;
+  color: #9399a8;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e7e9ee;
+}
+
+.bulk-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #f0f1f5;
+}
+
+.bulk-table input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid #e7e9ee;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.bulk-remove-row {
+  border: none;
+  background: none;
+  color: #9399a8;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+.bulk-remove-row:hover:not(:disabled) {
+  color: #dc3545;
+}
+
+.bulk-remove-row:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.bulk-add-row {
+  border: 1px dashed #10a37f;
+  background: none;
+  color: #0c8267;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.bulk-add-row:hover {
+  background: #e3f6f0;
+}
+
+.bulk-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.bulk-cancel,
+.bulk-save {
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.bulk-cancel {
+  background: #fff;
+  border-color: #e7e9ee;
+  color: #1c2333;
+}
+
+.bulk-cancel:hover:not(:disabled) {
+  background: #f4f6f9;
+}
+
+.bulk-save {
+  background: #10a37f;
+  color: #fff;
+}
+
+.bulk-save:hover:not(:disabled) {
+  background: #0c8267;
+}
+
+.bulk-cancel:disabled,
+.bulk-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .bulk-form-header {
+    grid-template-columns: 1fr 1fr;
+  }
+}

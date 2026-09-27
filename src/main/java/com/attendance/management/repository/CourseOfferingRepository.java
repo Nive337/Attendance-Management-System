@@ -19,4 +19,6 @@ public interface CourseOfferingRepository
 
     boolean existsByAcademicYearIdAndDegreeIdAndSemesterAndSectionAndSubjectIdAndIdNot(
             Long academicYearId, Long degreeId, Integer semester, String section, Long subjectId, Long excludeId);
+
+    List<CourseOffering> findByStatus(CourseOffering.Status status);
 }

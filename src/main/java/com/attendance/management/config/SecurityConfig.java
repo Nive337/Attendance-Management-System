@@ -2,6 +2,8 @@ package com.attendance.management.config;
 
 import com.attendance.management.security.JwtAuthenticationFilter;
 import com.attendance.management.security.RestAuthenticationEntryPoint;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,19 +17,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.attendance.management.security.LecturerUserDetailsService;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+private final LecturerUserDetailsService lecturerUserDetailsService;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                           RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
-    }
+public SecurityConfig(
+        JwtAuthenticationFilter jwtAuthenticationFilter,
+        RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+        LecturerUserDetailsService lecturerUserDetailsService) {
+
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+    this.lecturerUserDetailsService = lecturerUserDetailsService;
+}
 
     // Spring Security auto-wires this together with the LecturerUserDetailsService
     // bean into the AuthenticationManager below - no manual DaoAuthenticationProvider needed.
@@ -35,6 +44,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -61,4 +71,14 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+public DaoAuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider provider =
+            new DaoAuthenticationProvider(lecturerUserDetailsService);
+
+    provider.setPasswordEncoder(passwordEncoder());
+
+    return provider;
+}
 }

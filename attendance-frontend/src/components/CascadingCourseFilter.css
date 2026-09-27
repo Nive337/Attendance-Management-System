@@ -1,0 +1,36 @@
+.class-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.class-filter select {
+  padding: 9px 10px;
+  border: 1px solid #e7e9ee;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  min-width: 150px;
+}
+
+.class-filter select:disabled {
+  background: #f4f6f9;
+  color: #9399a8;
+  cursor: not-allowed;
+}
+
+.class-filter-hint {
+  font-size: 12.5px;
+  color: #9399a8;
+}
+
+.class-filter-hint-error {
+  color: #dc3545;
+}
+
+.class-filter-error {
+  width: 100%;
+  color: #dc3545;
+  font-size: 13px;
+}
